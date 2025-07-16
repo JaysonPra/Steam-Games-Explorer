@@ -16,9 +16,7 @@
 
 To provide a user friendly and interactive way for discovering games and analyzing different trends in gaming.
 
-## Dataset Link:
-
-[Steam Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
+**Dataset Link:** [Steam Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
 
 ---
 
