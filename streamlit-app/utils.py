@@ -1,8 +1,10 @@
 import pandas as pd
+import streamlit as st
 import numpy as np
 
+@st.cache_data
 def load_and_clean_data(path):
-    df = pd.read_cs(path)
+    df = pd.read_csv(path)
 
     # Renaming all columns
     df.columns = ['Name', 'Release date', 'Estimated owners', 'Peak CCU',
