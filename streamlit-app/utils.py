@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 
+# Data Cleaning
 @st.cache_data
 def load_and_clean_data(path):
     df = pd.read_csv(path)
@@ -51,3 +52,11 @@ def load_and_clean_data(path):
     df['Estimated owners'] = df['Estimated owners'].map(number_to_reduced_number)
 
     return df
+
+# Page Config
+def get_page_config():
+    return {
+        "page_title": "Steam Explorer",
+        "page_icon": "🎮",
+        "layout": "wide"
+    }
