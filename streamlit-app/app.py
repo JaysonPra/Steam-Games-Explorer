@@ -7,3 +7,4 @@ import numpy as np
 from utils import load_and_clean_data
 
 steam_games = load_and_clean_data("../data/games.csv")
+

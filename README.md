@@ -20,4 +20,30 @@ To provide a user friendly and interactive way for discovering games and analyzi
 
 ---
 
+## Setup Instructions
+
+### For Windows Users:
+
+1. **Run** the `setup.bat` script:
+
+   ```bash
+   setup.bat
+   ```
+
+2. This will set up a **virtual environment**, install all dependencies, and check for the dataset in the `data/` folder.
+
+---
+
+### For Mac/Linux/WSL Users:
+
+1. **Run** the `setup.sh` script:
+
+   ```bash
+   bash setup.sh
+   ```
+
+2. This will set up a **virtual environment**, install all dependencies, and check for the dataset in the `data/` folder.
+
+---
+
 ### _Made by a gamer, for gamers._

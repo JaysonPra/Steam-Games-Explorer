@@ -28,6 +28,24 @@ def load_and_clean_data(path):
 
     # Cleaning Estimated Owners
     owners_split = df["Estimated owners"].str.split(' - ', expand=True).astype(float)
-    df["Estimated owners"] = owners_split.mean(axis=1)
+    df["Estimated owners avg"] = owners_split.mean(axis=1)
+
+    number_to_reduced_number = {
+      '0 - 20000': '0 - 20K',
+      '20000 - 50000': '20K - 50K',
+      '50000 - 100000': '50K - 100K',
+      '100000 - 200000': '100K - 200K',
+      '200000 - 500000': '200K - 500K',
+      '500000 - 1000000': '500K - 1M',
+      '1000000 - 2000000': '1M - 2M',
+      '2000000 - 5000000': '2M - 5M',
+      '5000000 - 10000000': '5M - 10M',
+      '10000000 - 20000000': '10M - 20M',
+      '20000000 - 50000000': '20M - 50M',
+      '50000000 - 100000000': '50M - 100M',
+      '100000000 - 200000000': '100M - 200M'
+    }
+   
+    df['Estimated owners'] = df['Estimated owners'].map(number_to_reduced_number)
 
     return df
