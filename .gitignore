@@ -1,2 +1,17 @@
 data/games.csv
 venv/
+notebooks/.ipynb_checkpoints
+streamlit-app/__pycache__
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.env
+.venv
+*.sqlite3
+.DS_Store

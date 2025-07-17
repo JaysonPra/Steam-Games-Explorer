@@ -1,0 +1,7 @@
+[theme]
+base = "dark"
+primaryColor = "#00adee"               # Steam's accent blue
+backgroundColor = "#171A21"            # Steam's dark background
+secondaryBackgroundColor = "#1B2838"   # Sidebar and widget background
+textColor = "#c7d5e0"                  # Light gray text
+font = "sans serif"
