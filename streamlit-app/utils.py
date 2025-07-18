@@ -4,12 +4,12 @@ import numpy as np
 import os
 
 # Data Cleaning
-@st.cache_data
+@st.cache_data(show_spinner="Loading and cleaning raw data...")
 def load_and_clean_data():
     BASE_DIR = os.path.dirname(__file__)
     DATA_PATH = os.path.join(BASE_DIR, "..", "data", "games.csv")
     df = pd.read_csv(DATA_PATH)
-
+    
     # Renaming all columns
     df.columns = ['Name', 'Release date', 'Estimated owners', 'Peak CCU',
        'Required age', 'Price', 'Discount', 'DLC count', 'About the game',
