@@ -1,20 +1,22 @@
 import streamlit as st
 import time
 
-# Comments written by AI because I am lazy
+# Page Config
+st.set_page_config(
+    page_title="Steam Explorer",
+    page_icon="🎮",
+    layout="centered"
+)
 
-# Initialize session state flags
-if "landing_played" not in st.session_state:
-    st.session_state.landing_played = False
-
-if "page" not in st.session_state:
-    st.session_state.page = "home"
+# Session state to ensure the stream only runs once
+if "landing_stream_finished" not in st.session_state:
+    st.session_state.landing_stream_finished = False
 
 # Landing page content
-landing = """
+landing_text = """
 # 🎮 Steam Game Explorer
 
-Welcome to **Steam Game Explorer** — your interactive data-driven app with over 100,000 Steam Games.
+Welcome to **Steam Game Explorer** — your interactive data-driven app with over 100,000 Steam Games.  
 
 🔍 **Filter** games by genre, release date, and more. Find the game you want to play  
 🏆 **Visualize** top-rated games, most-played games, and more  
@@ -24,49 +26,28 @@ Welcome to **Steam Game Explorer** — your interactive data-driven app with ove
 """
 
 # Stream the generator character by character only once per session
-def landing_generator():    
-    for char in landing:
+def landing_generator():
+    for char in landing_text:
         yield char
         time.sleep(0.02)
+    st.session_state.landing_stream_finished = True
 
-if not st.session_state.landing_played:
-    st.write_stream(landing_generator)
-    st.session_state.landing_played = True
+if not st.session_state.landing_stream_finished:
+    st.write_stream(landing_generator())
+else:
+    st.markdown(landing_text)
+
+st.markdown("---")
+st.markdown("### Choose your path to explore:")
 
 # 3 navigation buttons
-st.markdown("---")
 col1, col2, col3 = st.columns(3)
 
-# Navigation button: Explore Games
 with col1:
-    if st.button("🔍 Explore Games"):
-        st.session_state.page = "explore"
-        st.session_state.landing_played = False
+    st.page_link("Pages/game_explorer.py", label="🔍 Explore Games")
 
-# Navigation button: Game Showcase
 with col2:
-    if st.button("🏆 Game Showcase"):
-        st.session_state.page = "showcase"
-        st.session_state.landing_played = False
+    st.page_link("Pages/game_showcase.py", label="🏆 Game Showcase")
 
-# Navigation button: Genre Selector
 with col3:
-    if st.button("🗂️ Genre Selector"):
-        st.session_state.page = "genre_selector"
-        st.session_state.landing_played = False
-
-# Navigate to selected page
-if st.session_state.page == "explore":
-    st.session_state.page = "home"
-    st.session_state.landing_played = False
-    st.switch_page("Pages/game_explorer.py")
-    
-elif st.session_state.page == "showcase":
-    st.session_state.page = "home"
-    st.session_state.landing_played = False
-    st.switch_page("Pages/game_showcase.py")
-    
-elif st.session_state.page == "genre_selector":
-    st.session_state.page = "home"
-    st.session_state.landing_played = False
-    st.switch_page("Pages/genre_selector.py")
+    st.page_link("Pages/genre_selector.py", label="🗂️ Genre Selector")

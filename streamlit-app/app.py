@@ -10,9 +10,7 @@ from utils import load_and_clean_data
 st.set_page_config(
         page_icon="🎮",
         layout="centered",
-        initial_sidebar_state="collapsed"
     )
-
 # Loading cleaned dataset
 steam_games = load_and_clean_data()
 
