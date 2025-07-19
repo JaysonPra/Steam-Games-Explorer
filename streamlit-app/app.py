@@ -3,6 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import os
 
 from utils import load_and_clean_data
 
@@ -11,6 +12,13 @@ st.set_page_config(
         page_icon="🎮",
         layout="centered",
     )
+
+# Page Logo
+current_dir = os.path.dirname(__file__)
+logo_path = os.path.join(current_dir, "..", "assets", "logo.png")
+
+st.logo(logo_path, size="large")
+
 # Loading cleaned dataset
 steam_games = load_and_clean_data()
 
