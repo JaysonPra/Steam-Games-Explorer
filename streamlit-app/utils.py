@@ -2,8 +2,74 @@
 import pandas as pd
 import numpy as np
 import os
-import streamlit as st # Import streamlit to use st.cache_data decorator
+import streamlit as st
 
+from constants.color_schemes import COLOR_SCHEMES
+
+# Helper function for Color Category
+def apply_categorical_order(df):
+    df['Price Category'] = pd.Categorical(
+        df['Price Category'],
+        categories=COLOR_SCHEMES["price_scale"]["order"],
+        ordered=True
+    )
+
+    return df
+
+# Function to be used in load_and_clean_data for creating features used for filtering
+def feature_creation(df):
+    #  -- Reviews --
+    df["Reviews"] = df["Positive"] + df["Negative"]
+    df["Reviews Percentage"] = (df["Positive"] / df["Reviews"]) * 100
+
+    df.loc[df["Reviews"] == 0, "Reviews Percentage"] = 0
+
+    df["Reviews Percentage"] = df["Reviews Percentage"].round(0).astype(int)
+
+    # -- Value / Weighted Value --
+    df.loc[df["Price"] > 0, "Value"] = df["Average playtime forever"] / df["Price"]
+
+    valid_mask = (
+        (df["Price"] > 0) &
+        np.isfinite(df["Value"]) &
+        df["Metacritic score"].notna() &
+        (df["Metacritic score"] > 0)
+    )
+
+    df.loc[valid_mask, "Weighted Value"] = df.loc[valid_mask, "Value"] * df.loc[valid_mask, "Metacritic score"]
+
+    # -- Release Year --
+    df["Release Year"] = df["Release date"].dt.year
+    
+    # -- Price Category --
+    price_conditions = [
+        (df['Price'] == 0),
+        (df['Price'] > 0) & (df['Price'] <= 4.99),
+        (df['Price'] > 4.99) & (df['Price'] <= 9.99),
+        (df['Price'] > 9.99) & (df['Price'] <= 19.99),
+        (df['Price'] > 19.99) & (df['Price'] <= 39.99),
+        (df['Price'] > 39.99) & (df['Price'] <= 59.99),
+        (df['Price'] > 59.99)
+    ]
+
+    choices = [
+        'Free',
+        '$0.01 - $4.99',
+        '$5.00 - $9.99',
+        '$10.00 - $19.99',
+        '$20.00 - $39.99',
+        '$40.00 - $59.99',
+        '$60.00+'
+    ]
+
+    df['Price Category'] = np.select(price_conditions, choices, default="Unknown")
+
+    # -- Steam store URL --
+    df['Steam_URL'] = 'https://store.steampowered.com/app/' + df.index.astype(str) + '/'
+
+    return df
+
+# -- Loading and Cleaning Data --
 @st.cache_data()
 def load_and_clean_data():
     BASE_DIR = os.path.dirname(__file__)
@@ -13,6 +79,8 @@ def load_and_clean_data():
         df = pd.read_csv(DATA_PATH)
     except FileNotFoundError:
         st.error(f"Error: Data file not found at {DATA_PATH}")
+
+    # -- Working with columns --
 
     # Renaming columns
     df.columns = ['Name', 'Release date', 'Estimated owners', 'Peak CCU',
@@ -35,7 +103,10 @@ def load_and_clean_data():
     cols_to_drop_existing = [col for col in cols_to_drop if col in df.columns]
     df.drop(cols_to_drop_existing, axis=1, inplace=True)
 
-    # Type Conversions and Initial Cleaning
+    # -- Index Reset --
+    df = df.reset_index(names=['AppID'])
+
+    # -- Type Conversions and Initial Cleaning --
 
     # Date Conversion
     df["Release date"] = pd.to_datetime(df["Release date"], errors='coerce')
@@ -57,7 +128,6 @@ def load_and_clean_data():
         '100000000 - 200000000': '100M - 200M'
     }
     df['Estimated owners_category'] = df['Estimated owners_str'].map(number_to_reduced_number)
-
     df.drop('Estimated owners', axis=1, inplace=True)
 
 
@@ -69,11 +139,11 @@ def load_and_clean_data():
         "Median playtime forever", "Median playtime two weeks"
     ]
     for col in numerical_cols_to_convert:
-        if col in df.columns: # Check if column exists after initial drops
+        if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
 
-    # Type optimization
+    # -- Type optimization --
     df["Required age"] = df["Required age"].astype('Int8')
     df["Price"] = df["Price"].astype('float32')
     df["DLC count"] = df["DLC count"].astype('Int16')
@@ -84,5 +154,14 @@ def load_and_clean_data():
     df["Average playtime two weeks"] = df["Average playtime two weeks"].astype('Int16')
     df["Median playtime forever"] = df["Median playtime forever"].astype('Int32')
     df["Median playtime two weeks"] = df["Median playtime two weeks"].astype('Int16')
+
+    # Floating point optimization
+    df['Price'] = df['Price'].round(2)
+
+    # -- Feature Creation for Filtering --
+    df = feature_creation(df)
+
+    # -- Category Order for Coloring --
+    df = apply_categorical_order(df)
 
     return df
