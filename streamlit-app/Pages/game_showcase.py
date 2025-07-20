@@ -32,3 +32,7 @@ with tab1:
     top_games_ccu(steam_games)
 with tab2:
     top_value_games(steam_games)
+with tab3:
+    sleeper_games(steam_games)
+with tab4:
+    games_pricing(steam_games)
