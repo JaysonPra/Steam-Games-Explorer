@@ -65,7 +65,7 @@ def feature_creation(df):
     df['Price Category'] = np.select(price_conditions, choices, default="Unknown")
 
     # -- Steam store URL --
-    df['Steam_URL'] = 'https://store.steampowered.com/app/' + df.index.astype(str) + '/'
+    df['Steam_URL'] = 'https://store.steampowered.com/app/' + df["AppID"].astype(str) + '/'
 
     return df
 
