@@ -19,6 +19,15 @@ COLOR_SCHEMES = {
             '#3b5a77', # Darker Steam Blue (Improved contrast for 40-59.99)
             '#2a475e'  # Prominent Dark Steam Blue (Improved contrast for 60+)
         ]
+    },
+    "indie_scale": {
+        "order":[
+            'Indie',
+            'Non-Indie'
+        ],
+        "colors": [
+            '#66c0f4',
+            "#314961"
+        ]
     }
 }
-
