@@ -1,7 +1,7 @@
 from constants.color_schemes import COLOR_SCHEMES
 import altair as alt
 
-def color_getter():
+def price_color_getter():
     price_scheme = COLOR_SCHEMES["price_scale"]
     color = alt.Color(
         "Price Category:N",
@@ -10,6 +10,18 @@ def color_getter():
         scale=alt.Scale(
             domain=price_scheme["order"],
             range=price_scheme["colors"]
+        )
+    )
+    return color
+
+def indie_color_getter():
+    indie_scheme = COLOR_SCHEMES["indie_scale"]
+    color = alt.Color(
+        "Is_Indie:N",
+        title="Game Type",
+        scale=alt.Scale(
+            domain=indie_scheme["order"],
+            range=indie_scheme["colors"]
         )
     )
     return color
