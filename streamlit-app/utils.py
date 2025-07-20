@@ -113,6 +113,7 @@ def load_and_clean_data():
         lambda x: "single-player" in x.lower() or "multi-player" in x.lower()
     )
     df = df[df["Is_Game"] == True].copy()
+    df = df.drop(columns=['Is_Game'])
 
     # -- Index Reset --
     df = df.reset_index(names=['AppID'])
