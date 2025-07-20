@@ -64,6 +64,11 @@ def feature_creation(df):
 
     df['Price Category'] = np.select(price_conditions, choices, default="Unknown")
 
+    # -- Indie Or Not --
+    df["Is_Indie"] = df["Genres"].fillna('').apply(
+        lambda x: 'Indie' if "Indie" in x else "Non-Indie"
+    )
+
     # -- Steam store URL --
     df['Steam_URL'] = 'https://store.steampowered.com/app/' + df["AppID"].astype(str) + '/'
 
@@ -102,6 +107,12 @@ def load_and_clean_data():
     
     cols_to_drop_existing = [col for col in cols_to_drop if col in df.columns]
     df.drop(cols_to_drop_existing, axis=1, inplace=True)
+
+    # -- Is a Game or Not --
+    df["Is_Game"] = df["Categories"].fillna('').apply(
+        lambda x: "single-player" in x.lower() or "multi-player" in x.lower()
+    )
+    df = df[df["Is_Game"] == True].copy()
 
     # -- Index Reset --
     df = df.reset_index(names=['AppID'])
