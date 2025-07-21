@@ -10,7 +10,7 @@ st.markdown(
     """
     <style>
     .stMainBlockContainer {
-        padding-top: 3rem; 
+        padding-top: 1.5rem; 
         padding-bottom: 1rem;
     }
     </style>
