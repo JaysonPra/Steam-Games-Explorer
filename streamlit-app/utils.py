@@ -3,8 +3,21 @@ import pandas as pd
 import numpy as np
 import os
 import streamlit as st
+import itertools
+from collections import Counter
 
 from constants.color_schemes import COLOR_SCHEMES
+
+# Unique Genre Getter
+@st.cache_data(show_spinner=False)
+def get_unique_genres(steam_games):
+    all_genres = list(itertools.chain.from_iterable(steam_games["Genre List"]))
+
+    genre_counts = Counter(all_genres)
+
+    sorted_genres = [genre for genre, count in genre_counts.most_common()]
+
+    return sorted_genres
 
 # Helper function for Color Category
 def apply_categorical_order(df):
@@ -69,13 +82,20 @@ def feature_creation(df):
         lambda x: 'Indie' if "Indie" in x else "Non-Indie"
     )
 
+    # -- Genre List --
+    df["Genre List"] = df["Genres"].fillna('').apply(
+        lambda x: [
+            genre.strip() for genre in x.split(',') if genre.strip()
+        ]
+    )
+
     # -- Steam store URL --
     df['Steam_URL'] = 'https://store.steampowered.com/app/' + df["AppID"].astype(str) + '/'
 
     return df
 
 # -- Loading and Cleaning Data --
-@st.cache_data()
+@st.cache_data(show_spinner=False)
 def load_and_clean_data():
     BASE_DIR = os.path.dirname(__file__)
     DATA_PATH = os.path.join(BASE_DIR, "..", "data", "games.csv")
