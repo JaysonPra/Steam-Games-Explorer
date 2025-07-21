@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from utils import load_and_clean_data
+from utils import load_and_clean_data, get_unique_genres
 
 # Page Config
 st.set_page_config(
@@ -19,8 +19,12 @@ logo_path = os.path.join(current_dir, "..", "assets", "logo.png")
 
 st.logo(logo_path, size="large")
 
-# Loading cleaned dataset
-steam_games = load_and_clean_data()
+with st.spinner("Loading the steam dataset and preparing dashboard..."):
+    # Loading cleaned dataset for caching
+    steam_games = load_and_clean_data()
+
+    # Loading unique genres for caching
+    get_unique_genres(steam_games)
 
 pages = [
     st.Page("Pages/landing.py", title="Steam Explorer", default=True),
