@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 
 from utils import load_and_clean_data, COLOR_SCHEMES
-from visualizations.showcase import *
+from views.showcase import *
 
 # Reducing top and bottom padding (Very hacky implementation for a sidebar)
 st.markdown(
