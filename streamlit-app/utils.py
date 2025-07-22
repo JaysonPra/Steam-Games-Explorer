@@ -10,8 +10,8 @@ from constants.color_schemes import COLOR_SCHEMES
 
 # Unique Genre Getter
 @st.cache_data(show_spinner=False)
-def get_unique_genres(steam_games):
-    all_genres = list(itertools.chain.from_iterable(steam_games["Genre List"]))
+def get_unique_genres(df):
+    all_genres = list(itertools.chain.from_iterable(df["Genre List"]))
 
     genre_counts = Counter(all_genres)
 
@@ -195,5 +195,18 @@ def load_and_clean_data():
 
     # -- Category Order for Coloring --
     df = apply_categorical_order(df)
+
+    # Cleaning Genre List
+    genres_to_exclude = ['Short', 'Movie', 'Accounting', 'Photo Editing', 'Web Publishing', 'Video Production', 'Software Training', 'Audio Production', 'Game Development', 'Design & Illustration', 'Animation & Modeling', 'Education', 'Utilities']
+    exclude_genre_set = set(genres_to_exclude)
+    df = df[df["Genre List"].apply(
+        lambda game_genres: set(game_genres).isdisjoint(exclude_genre_set)
+    )].copy()
+    df["Genre List"] = df["Genre List"].apply(
+        lambda genres: [
+            "Free To Play" if genre == "Free to Play" else genre
+            for genre in genres
+        ] if isinstance(genres, list) else genres
+    )
 
     return df
