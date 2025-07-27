@@ -24,7 +24,7 @@ st.markdown(
 )
 
 # Padding left and right
-buff1, main, buff2 = st.columns([0.5,4,0.5])
+buff1, main, buff2 = st.columns([0.05,1,0.05])
 
 with main:
     st.subheader("Genre Selector")
