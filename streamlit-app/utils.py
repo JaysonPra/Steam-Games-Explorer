@@ -5,6 +5,7 @@ import os
 import streamlit as st
 import itertools
 from collections import Counter
+from kaggle.api.kaggle_api_extended import KaggleApi
 
 from constants.color_schemes import COLOR_SCHEMES
 
@@ -97,13 +98,17 @@ def feature_creation(df):
 # -- Loading and Cleaning Data --
 @st.cache_data(show_spinner=False)
 def load_and_clean_data():
-    BASE_DIR = os.path.dirname(__file__)
-    DATA_PATH = os.path.join(BASE_DIR, "..", "data", "games.csv")
+    os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
+    os.environ["KAGGLE_KEY"] = st.secrets["KAGGLE_KEY"]
+
+    api = KaggleApi()
+    api.authenticate()
+    api.dataset_download_files('fronkongames/steam-games-dataset', path='data', unzip=True)
 
     try:
-        df = pd.read_csv(DATA_PATH)
+        df = pd.read_csv('data/games.csv')
     except FileNotFoundError:
-        st.error(f"Error: Data file not found at {DATA_PATH}")
+        st.error(f"Error: Data file not found at {'data/games.csv'}")
 
     # -- Working with columns --
 
