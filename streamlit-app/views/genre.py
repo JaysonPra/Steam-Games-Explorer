@@ -1,5 +1,6 @@
 import streamlit as st
 import altair as alt
+import pandas as pd
 
 from utils import get_unique_genres
 from visualization_utils.altair_chart_helpers import *
@@ -10,7 +11,6 @@ def filter_by_genre(df, genre_selections):
     return df[df["Genre List"].apply(
         lambda game_genres_list: all(g in game_genres_list for g in genre_selections)
     )].copy()
-
 
 # Genre Yearly Picks Visualization
 def genre_yearly_picks(df):
@@ -99,9 +99,28 @@ def genre_pricing(df):
             key="genre_pricing_chart"
         )
 
+    with col2:
         if selection_data.selection["price_category_selection"]:
-            st.write(selection_data.selection["price_category_selection"][0]["Price Category"])
-    
+            selected_price_category = selection_data.selection["price_category_selection"][0]["Price Category"]
+
+            filtered_df = df[df["Price Category"] == selected_price_category].copy()
+            
+            exploded_df = filtered_df.explode("Genre List")
+
+            genre_counts = exploded_df["Genre List"].value_counts().reset_index().head(10)
+            genre_counts.columns = ["Genre", "Count"]
+
+            chart2 = alt.Chart(genre_counts).mark_bar().encode(
+                x=alt.X("Count:Q", title="Number of Titles"),
+                y=alt.Y("Genre:N", sort="-x", title="Genre"),
+                tooltip=["Genre", "Count"]
+            ).properties(
+                title=f"Top 5 Genres in '{selected_price_category}' Category"
+            )
+
+            st.altair_chart(chart2, use_container_width=True)
+        else:
+            st.info("Select a price category from the chart on the left to see the genre breakdown.")
 
 
 
