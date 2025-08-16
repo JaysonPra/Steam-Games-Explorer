@@ -10,7 +10,7 @@
 
 - **Filter games** by genre, release year, price, platform, and more
 - **Visualize trends** like top games by genre, price versus popularity, and more
-- **Search** for specific games and view detailed information including description, concurrent player count, peak CCU, and more via the SteamDB API.
+- **Search** for specific games and view information including number of reviews, review percentage, peak CCU, and price
 
 ## Objective
 
