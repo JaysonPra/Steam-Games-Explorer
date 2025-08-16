@@ -122,7 +122,101 @@ def genre_pricing(df):
         else:
             st.info("Select a price category from the chart on the left to see the genre breakdown.")
 
+# Genre Indie Number
+def genre_indie(df):
+    # Filter the DataFrame to include only indie games
+    indie_df = df[df['Is_Indie'] == 'Indie'].copy()
+    
+    # Count the number of indie games for each release year
+    indie_counts = indie_df['Release Year'].value_counts().reset_index()
+    indie_counts.columns = ['Release Year', 'Count']
+    
+    indie_counts = indie_counts.sort_values('Release Year')
 
+    chart_title = "Number of Indie Games Released Per Year"
+
+    # Define a selection for the first chart
+    selection = alt.selection_point(
+        fields=['Release Year'],
+        name="year_selection",
+        on="click",
+        clear="dblclick"
+    )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        chart1 = alt.Chart(indie_counts).mark_bar().encode(
+            x=alt.X('Release Year:O', axis=alt.Axis(format="d", title="Release Year")),
+            y=alt.Y("Count:Q", title="Number of Indie Games"),
+            tooltip=[
+                alt.Tooltip('Release Year', title='Year'), 
+                alt.Tooltip('Count', title='Number of Titles')
+            ]
+        ).properties(
+            title=chart_title
+        ).add_params(
+            selection
+        )
+        
+        selection_data = st.altair_chart(
+            chart1,
+            use_container_width=True,
+            on_select="rerun",
+            key="genre_indie_chart"
+        )
+
+    with col2:
+        if selection_data.selection is not None and "year_selection" in selection_data.selection and selection_data.selection["year_selection"]:
+            # Get the selected year
+            selected_year = selection_data.selection["year_selection"][0]["Release Year"]
+            
+            # Filter the df for the selected year and indie games
+            top_games_df = df[
+                (df["Release Year"] == selected_year) & 
+                (df["Is_Indie"] == "Indie")
+            ].copy()
+            
+            top_games_df = top_games_df.sort_values(by="Peak CCU", ascending=False).head(10)
+            
+            if not top_games_df.empty:
+                chart2 = alt.Chart(top_games_df).mark_bar().encode(
+                    x=alt.X("Peak CCU:Q", title="Peak Concurrent Users (CCU)"),
+                    y=alt.Y("Name:N", sort="-x", title="Game Title"),
+                    href="Steam_URL:N",
+                    tooltip=game_tooltip()
+                ).properties(
+                    title=f"Top 10 Indie Games by Peak CCU"
+                )
+                
+                st.altair_chart(chart2, use_container_width=True)
+        else:
+            st.info("Click on a bar in the chart on the left to see the top indie games for that year.")
+
+# Genre Saturation Chart
+def genre_saturation(df):
+    df = df[
+        (df["Reviews"] >= 100)
+    ]
+    saturation_counts = df.groupby('Release Year').size().reset_index(name='Count')
+    
+    chart_title = "Genre Saturation Over Time (100+ Reviews Games)"
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        chart = alt.Chart(saturation_counts).mark_line(point=True).encode(
+            x=alt.X('Release Year:O', axis=alt.Axis(title="Release Year", format="d")),
+            y=alt.Y("Count:Q", title="Number of Releases"),
+            tooltip=[
+                alt.Tooltip('Release Year', title='Year'),
+                alt.Tooltip('Count', title='Number of Titles')
+            ]
+        ).properties(
+            title=chart_title
+        )
+
+        st.altair_chart(chart, use_container_width=True)
+    with col2:
+        st.info("2025 will show low saturation due to the dataset being last updated in April 2025.")
 
 # Builder for the Genre Selector Page
 @st.fragment
@@ -150,5 +244,9 @@ def genre_selector_builder(steam_games):
         with tab2:
             if genre_selections:
                 genre_pricing(filtered_df)
-            # genre_indie(steam_games, genre_selections)
-            # genre_saturation(steam_games, genre_selections)
+        with tab3:
+            if genre_selections:
+                genre_indie(filtered_df)
+        with tab4:
+            if genre_selections:
+                genre_saturation(filtered_df)
