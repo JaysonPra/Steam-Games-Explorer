@@ -126,7 +126,7 @@ def load_and_clean_data():
     # Dropping unneeded columns
     cols_to_drop = [
         "Screenshots", "Movies", "Tags", "Website", "Support email",
-        "Header image", "About the game", "Metacritic url", "Support url",
+        "About the game", "Metacritic url", "Support url",
         "Score rank", "Notes", "Reviews"
     ]
     
