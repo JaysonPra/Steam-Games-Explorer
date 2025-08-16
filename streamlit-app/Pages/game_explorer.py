@@ -21,6 +21,5 @@ st.markdown(
 
 steam_games = load_and_clean_data()
 
-st.write(steam_games)
-
+# Calling function from Views/explorer
 game_explorer(steam_games)
