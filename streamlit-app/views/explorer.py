@@ -48,7 +48,7 @@ def game_explorer(df):
     if game_name:
         filtered_df = filtered_df[filtered_df['Name'].str.contains(game_name, case=False, na=False)]
     if selected_genres:
-        filtered_df = filtered_df[filtered_df['Genre List'].apply(lambda x: any(genre in x for genre in selected_genres))]
+        filtered_df = filtered_df[filtered_df['Genre List'].apply(lambda x: all(genre in x for genre in selected_genres))]
     filtered_df = filtered_df[(filtered_df['Reviews Percentage'] >= min_rating) & (filtered_df['Reviews Percentage'] <= max_rating)]
     filtered_df = filtered_df[(filtered_df['Reviews'] >= min_reviews)]
     filtered_df = filtered_df[(filtered_df['Price'] >= min_price) & (filtered_df['Price'] <= max_price)]
