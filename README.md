@@ -6,6 +6,10 @@
 
 **Steam Game Explorer** is an interactive Streamlit app built on the Steam Games Dataset which contains over 100,000 games and was last updated on April 26, 2025.
 
+## Live App
+
+Explore the app here: [Steam Game Explorer](https://steam-games-explorer.streamlit.app/)
+
 ## Key Features
 
 - **Filter games** by genre, release year, price, platform, and more
